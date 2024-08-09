@@ -48,7 +48,8 @@ function MusicPlayer(musicData){
     container.innerHTML = '';
 
     let trackIndex = 0;
-
+    let isRepeating = false; 
+    
     const imgContainer = document.createElement('div');
     imgContainer.classList.add('img-container');
 
@@ -62,7 +63,7 @@ function MusicPlayer(musicData){
     const title = document.createElement('h1');
     title.classList.add('title');
 
-    const artist = document.createElement('h3');
+    const artist = document.createElement('p');
     artist.classList.add('artist');
 
     ArtistTitle.appendChild(title);
@@ -186,6 +187,24 @@ function MusicPlayer(musicData){
     nextIcon.addEventListener('click', () => {
         const newIndex = (trackIndex < musicData.length - 1) ? trackIndex + 1 : 0;
         loadTrack(newIndex);
+    });
+
+
+
+
+    repeat.addEventListener('click', () => {
+        isRepeating = isRepeating ? false : true;
+        repeat.style.color = isRepeating ? '#ea1026' : 'gray';
+    });
+
+    audio.addEventListener('ended', () => {
+        if (isRepeating) {
+            audio.currentTime = 0;
+            audio.play();
+        } else {
+            const newIndex = (trackIndex < musicData.length - 1) ? trackIndex + 1 : 0;
+            loadTrack(newIndex);
+        }
     });
 
     loadTrack(trackIndex); 

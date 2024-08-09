@@ -3,6 +3,7 @@ body {
   padding: 0;
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
   height: 100vh;
   width: 100vw;
   justify-content: center;
@@ -12,15 +13,13 @@ body #container {
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 5px 10px #888888;
+  background-color: white;
+  box-shadow: 5px 10px black;
   flex-direction: column;
   width: 350px;
   height: 500px;
   border-radius: 8px;
   border: 1px solid grey;
-}
-body #container .img-container {
-  margin-top: -10%;
 }
 body #container .img-container .img {
   width: 170px;
@@ -34,17 +33,15 @@ body #container .img-container .img {
 }
 body #container .ArtistTitle h1 {
   margin-top: 20px;
-  margin-left: 12px;
 }
 body #container .ArtistTitle p {
   margin-top: -10%;
   font-size: 15px;
-  margin-left: 12px;
 }
 body #container .time {
   display: flex;
   gap: 215px;
-  margin-top: 62px;
+  margin-top: 30px;
 }
 body #container #myProgressBar {
   width: 290px;
