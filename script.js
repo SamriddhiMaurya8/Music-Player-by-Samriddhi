@@ -43,45 +43,41 @@ const myData = [
     }
 ];
 
-function MusicPlayer(musicData){
+function MusicPlayer(musicData) {
     const container = document.getElementById('container');
     container.innerHTML = '';
 
     let trackIndex = 0;
-    let isRepeating = false; 
-    
+    let isRepeating = false;
+    let isShuffling = false;
+    let playlist = [...musicData];
+    let isPlaying = false;
+    let audio = new Audio(musicData[trackIndex].url);
+
+  
     const imgContainer = document.createElement('div');
     imgContainer.classList.add('img-container');
-
     const image = document.createElement('img');
     image.classList.add('img');
-    imgContainer.appendChild(image);
 
-    const ArtistTitle = document.createElement('div'); 
+
+    const ArtistTitle = document.createElement('div');
     ArtistTitle.classList.add('ArtistTitle');
-
     const title = document.createElement('h1');
     title.classList.add('title');
-
     const artist = document.createElement('p');
     artist.classList.add('artist');
-
-    ArtistTitle.appendChild(title);
-    ArtistTitle.appendChild(artist);
+ 
 
     const time = document.createElement('div');
     time.classList.add('time');
-
     const startTime = document.createElement('span');
     startTime.classList.add('startTime');
     startTime.textContent = '0:00';
-
     const endTime = document.createElement('span');
     endTime.classList.add('endTime');
     endTime.textContent = '0:00';
-
-    time.appendChild(startTime);
-    time.appendChild(endTime);
+ 
 
     const progressBar = document.createElement('input');
     progressBar.id = 'myProgressBar';
@@ -93,29 +89,32 @@ function MusicPlayer(musicData){
 
     const mainButton = document.createElement('div');
     mainButton.classList.add('mainButton');
-
     const shuffle = document.createElement('i');
     shuffle.classList.add('fa-solid', 'fa-shuffle', 'shuffle');
     shuffle.style.color = 'gray';
 
     const button = document.createElement('div');
     button.classList.add('playButton');
-
     const prevIcon = document.createElement('i');
     prevIcon.classList.add('fa-solid', 'fa-backward', 'prevIcon');
     prevIcon.style.color = 'gray';
-
     const playIcon = document.createElement('i');
     playIcon.classList.add('fa-solid', 'fa-circle-play', 'playIcon');
     playIcon.style.color = 'red';
-
     const nextIcon = document.createElement('i');
     nextIcon.classList.add('fa-solid', 'fa-forward', 'nextIcon');
     nextIcon.style.color = 'gray';
-
     const repeat = document.createElement('i');
     repeat.classList.add('fa-solid', 'fa-repeat', 'repeat');
     repeat.style.color = 'gray';
+
+    imgContainer.appendChild(image);
+
+    ArtistTitle.appendChild(title);
+    ArtistTitle.appendChild(artist);
+
+    time.appendChild(startTime);
+    time.appendChild(endTime);
 
     button.appendChild(prevIcon);
     button.appendChild(playIcon);
@@ -131,9 +130,7 @@ function MusicPlayer(musicData){
     container.appendChild(progressBar);
     container.appendChild(mainButton);
 
-    let audio = new Audio(musicData[trackIndex].url);
-    let isPlaying = false;
-
+    
     function loadTrack(index) {
         trackIndex = index;
         audio.src = musicData[trackIndex].url;
@@ -142,16 +139,20 @@ function MusicPlayer(musicData){
         artist.textContent = `by ${musicData[trackIndex].artist}`;
         audio.currentTime = 0;
         progressBar.value = 0;
+        updatePlayIcon(false);
 
-        
         audio.addEventListener('loadedmetadata', () => {
             endTime.textContent = formatTime(audio.duration);
         });
 
-        audio.play();
-        isPlaying = true;
-        playIcon.classList.remove('fa-circle-play');
-        playIcon.classList.add('fa-circle-pause');
+        audio.play().then(() => {
+            isPlaying = true;
+            updatePlayIcon(true);
+        }).catch(error => {
+            console.error('Playback failed:', error);
+            isPlaying = false;
+            updatePlayIcon(false);
+        });
     }
 
     function formatTime(seconds) {
@@ -160,17 +161,32 @@ function MusicPlayer(musicData){
         return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
     }
 
+    function getRandomIndex() {
+        return Math.floor(Math.random() * playlist.length);
+    }
+
+    function shufflePlaylist() {
+        for (let i = playlist.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [playlist[i], playlist[j]] = [playlist[j], playlist[i]];
+        }
+    }
+
+    function updatePlayIcon(isPlaying) {
+        playIcon.classList.toggle('fa-circle-play', !isPlaying);
+        playIcon.classList.toggle('fa-circle-pause', isPlaying);
+    }
+
+    
     playIcon.addEventListener('click', () => {
         if (isPlaying) {
             audio.pause();
-            playIcon.classList.remove('fa-circle-pause');
-            playIcon.classList.add('fa-circle-play');
+            isPlaying = false;
         } else {
             audio.play();
-            playIcon.classList.remove('fa-circle-play');
-            playIcon.classList.add('fa-circle-pause');
+            isPlaying = true;
         }
-        isPlaying = !isPlaying;
+        updatePlayIcon(isPlaying);
     });
 
     audio.addEventListener('timeupdate', () => {
@@ -180,21 +196,30 @@ function MusicPlayer(musicData){
     });
 
     prevIcon.addEventListener('click', () => {
-        const newIndex = (trackIndex > 0) ? trackIndex - 1 : musicData.length - 1;
-        loadTrack(newIndex);
+        trackIndex = isShuffling ? getRandomIndex() : (trackIndex > 0 ? trackIndex - 1 : musicData.length - 1);
+        loadTrack(trackIndex);
     });
 
     nextIcon.addEventListener('click', () => {
-        const newIndex = (trackIndex < musicData.length - 1) ? trackIndex + 1 : 0;
-        loadTrack(newIndex);
+        trackIndex = isShuffling ? getRandomIndex() : (trackIndex < musicData.length - 1 ? trackIndex + 1 : 0);
+        loadTrack(trackIndex);
     });
 
-
-
-
+    
     repeat.addEventListener('click', () => {
-        isRepeating = isRepeating ? false : true;
+        isRepeating = !isRepeating;
         repeat.style.color = isRepeating ? 'red' : 'gray';
+    });
+
+    
+    shuffle.addEventListener('click', () => {
+        isShuffling = !isShuffling;
+        shuffle.style.color = isShuffling ? 'red' : 'gray';
+        if (isShuffling) {
+            shufflePlaylist();
+            trackIndex = getRandomIndex();
+            loadTrack(trackIndex);
+        }
     });
 
     audio.addEventListener('ended', () => {
@@ -202,12 +227,11 @@ function MusicPlayer(musicData){
             audio.currentTime = 0;
             audio.play();
         } else {
-            const newIndex = (trackIndex < musicData.length - 1) ? trackIndex + 1 : 0;
-            loadTrack(newIndex);
+            nextIcon.click();
         }
     });
 
-    loadTrack(trackIndex); 
+    loadTrack(trackIndex);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
