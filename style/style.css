@@ -14,12 +14,18 @@ body #container {
   justify-content: center;
   align-items: center;
   background-color: white;
-  box-shadow: 5px 10px black;
+  box-shadow: 5px 5px black;
   flex-direction: column;
   width: 350px;
   height: 500px;
   border-radius: 8px;
   border: 1px solid grey;
+}
+@media (max-width: 600px) {
+  body #container {
+    width: 80%;
+    height: auto;
+  }
 }
 body #container .img-container .img {
   width: 170px;
@@ -43,10 +49,25 @@ body #container .time {
   gap: 215px;
   margin-top: 30px;
 }
+@media (max-width: 600px) {
+  body #container .time {
+    gap: 200px;
+  }
+}
+@media (max-width: 400px) {
+  body #container .time {
+    gap: 100px;
+  }
+}
 body #container #myProgressBar {
   width: 290px;
   color: blue;
   cursor: pointer;
+}
+@media (max-width: 400px) {
+  body #container #myProgressBar {
+    width: 90%;
+  }
 }
 body #container .mainButton {
   border: none;
@@ -87,8 +108,44 @@ body #container .mainButton .shuffle {
   cursor: pointer;
   margin-top: 17px;
 }
+@media (max-width: 400px) {
+  body #container .mainButton .shuffle {
+    margin-left: 50px;
+  }
+}
 body #container .mainButton .repeat {
   font-size: 20px;
   margin-top: 17px;
   cursor: pointer;
+}
+@media (max-width: 400px) {
+  body #container .mainButton .repeat {
+    margin-left: 50px;
+  }
+}
+@media screen and (max-width: 600px) {
+  body #container .mainButton {
+    flex-direction: row;
+    gap: 45px;
+  }
+}
+@media (max-width: 400px) {
+  body #container .mainButton {
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 600px) {
+  #container {
+    width: 90%;
+    height: auto;
+  }
+  .time {
+    gap: 10px;
+  }
+  .mainButton {
+    flex-direction: column;
+    gap: 10px;
+  }
 }/*# sourceMappingURL=style.css.map */

@@ -107,7 +107,7 @@ function MusicPlayer(musicData){
 
     const playIcon = document.createElement('i');
     playIcon.classList.add('fa-solid', 'fa-circle-play', 'playIcon');
-    playIcon.style.color = '#ea1026';
+    playIcon.style.color = 'red';
 
     const nextIcon = document.createElement('i');
     nextIcon.classList.add('fa-solid', 'fa-forward', 'nextIcon');
@@ -194,7 +194,7 @@ function MusicPlayer(musicData){
 
     repeat.addEventListener('click', () => {
         isRepeating = isRepeating ? false : true;
-        repeat.style.color = isRepeating ? '#ea1026' : 'gray';
+        repeat.style.color = isRepeating ? 'red' : 'gray';
     });
 
     audio.addEventListener('ended', () => {

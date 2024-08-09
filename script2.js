@@ -43,13 +43,15 @@ const myData = [
     }
 ];
 
-function MusicPlayer(musicData){
+function MusicPlayer(musicData) {
     const container = document.getElementById('container');
     container.innerHTML = '';
 
     let trackIndex = 0;
     let isRepeating = false; 
-    
+    let isShuffling = false; 
+    let playlist = [...musicData];
+
     const imgContainer = document.createElement('div');
     imgContainer.classList.add('img-container');
 
@@ -107,7 +109,7 @@ function MusicPlayer(musicData){
 
     const playIcon = document.createElement('i');
     playIcon.classList.add('fa-solid', 'fa-circle-play', 'playIcon');
-    playIcon.style.color = '#ea1026';
+    playIcon.style.color = 'red';
 
     const nextIcon = document.createElement('i');
     nextIcon.classList.add('fa-solid', 'fa-forward', 'nextIcon');
@@ -143,7 +145,6 @@ function MusicPlayer(musicData){
         audio.currentTime = 0;
         progressBar.value = 0;
 
-        
         audio.addEventListener('loadedmetadata', () => {
             endTime.textContent = formatTime(audio.duration);
         });
@@ -158,6 +159,17 @@ function MusicPlayer(musicData){
         const minutes = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    function getRandomIndex() {
+        return Math.floor(Math.random() * playlist.length);
+    }
+
+    function shufflePlaylist() {
+        for (let i = playlist.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [playlist[i], playlist[j]] = [playlist[j], playlist[i]];
+        }
     }
 
     playIcon.addEventListener('click', () => {
@@ -180,21 +192,36 @@ function MusicPlayer(musicData){
     });
 
     prevIcon.addEventListener('click', () => {
-        const newIndex = (trackIndex > 0) ? trackIndex - 1 : musicData.length - 1;
-        loadTrack(newIndex);
+        if (isShuffling) {
+            trackIndex = getRandomIndex();
+        } else {
+            trackIndex = (trackIndex > 0) ? trackIndex - 1 : musicData.length - 1;
+        }
+        loadTrack(trackIndex);
     });
 
     nextIcon.addEventListener('click', () => {
-        const newIndex = (trackIndex < musicData.length - 1) ? trackIndex + 1 : 0;
-        loadTrack(newIndex);
+        if (isShuffling) {
+            trackIndex = getRandomIndex();
+        } else {
+            trackIndex = (trackIndex < musicData.length - 1) ? trackIndex + 1 : 0;
+        }
+        loadTrack(trackIndex);
     });
 
-
-
-
     repeat.addEventListener('click', () => {
-        isRepeating = isRepeating ? false : true;
-        repeat.style.color = isRepeating ? '#ea1026' : 'gray';
+        isRepeating = !isRepeating;
+        repeat.style.color = isRepeating ? 'red' : 'gray';
+    });
+
+    shuffle.addEventListener('click', () => {
+        isShuffling = !isShuffling;
+        shuffle.style.color = isShuffling ? 'red' : 'gray';
+        if (isShuffling) {
+            shufflePlaylist(); // Shuffle the playlist
+            trackIndex = getRandomIndex(); // Start with a random track
+            loadTrack(trackIndex);
+        }
     });
 
     audio.addEventListener('ended', () => {
@@ -202,8 +229,12 @@ function MusicPlayer(musicData){
             audio.currentTime = 0;
             audio.play();
         } else {
-            const newIndex = (trackIndex < musicData.length - 1) ? trackIndex + 1 : 0;
-            loadTrack(newIndex);
+            if (isShuffling) {
+                trackIndex = getRandomIndex();
+            } else {
+                trackIndex = (trackIndex < musicData.length - 1) ? trackIndex + 1 : 0;
+            }
+            loadTrack(trackIndex);
         }
     });
 

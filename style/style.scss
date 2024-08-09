@@ -8,7 +8,6 @@ body {
     width: 100vw;  
     justify-content: center;
     align-items: center;
-    // background-color: yellow;
   
 
     #container {
@@ -16,14 +15,22 @@ body {
         justify-content: center;
         align-items: center;
         background-color: white;
-        box-shadow: 5px 10px black;
+        box-shadow: 5px 5px black;
+        // box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 8px 30px rgba(0, 0, 0, 0.1); /* Beautiful shadow effect */
+
         flex-direction: column;
         width: 350px;
         height: 500px;
 
         border-radius: 8px;
         border: 1px solid grey;
-        
+
+        @media (max-width: 600px) {
+           
+                width: 80%; 
+                height: auto; 
+            
+        }
 
         .img-container {
             // margin-top: -10%; 
@@ -36,6 +43,8 @@ body {
                 object-fit: cover; 
                 // margin-top: 50px;
             }
+
+       
         }
 
         .ArtistTitle{
@@ -56,6 +65,14 @@ body {
             display: flex;
             gap: 215px;
             margin-top: 30px;
+
+
+            @media (max-width: 600px) {
+                    gap: 200px;  
+            }
+            @media (max-width: 400px) {
+                gap: 100px;
+                }
         }
 
         #myProgressBar {
@@ -63,6 +80,10 @@ body {
             // margin-top: 62px;
             color: blue;
             cursor: pointer;
+
+            @media (max-width: 400px) {
+            width: 90%;
+            }
             
         }
 
@@ -110,11 +131,30 @@ body {
                 font-size: 20px;
                 cursor: pointer;
                 margin-top: 17px;
+
+                @media  (max-width:400px) {
+                    margin-left:50px
+                }
             }
             .repeat{
                 font-size: 20px;
                 margin-top: 17px;
                 cursor: pointer;
+                @media  (max-width:400px) {
+                    margin-left:50px
+                }
+            }
+
+
+            @media screen and (max-width:600px) {
+                
+                    flex-direction: row; 
+                    gap: 45px; 
+                
+            }
+            @media (max-width: 400px) {
+                flex-direction: column;
+                gap: 5px;
             }
 
         }
@@ -125,3 +165,22 @@ body {
 
     }
 }
+
+
+
+@media (max-width: 600px) {
+    #container {
+        width: 90%; 
+        height: auto; 
+    }
+
+    .time {
+        gap: 10px;
+    }
+
+    .mainButton {
+        flex-direction: column; 
+        gap: 10px; 
+    }
+}
+
